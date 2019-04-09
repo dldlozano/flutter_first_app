@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 
 import 'package:scoped_model/scoped_model.dart';
-import '../scoped-models/products.dart';
+import '../scoped-models/main.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -76,32 +76,41 @@ class _ProductEditPageState extends State<ProductEditPage> {
     );
   }
 
-  void _submitForm(Function addProduct, Function updateProduct, [int selectedProductIndex]) {
+  void _submitForm(
+      Function addProduct, Function updateProduct, Function setSelectedProduct,
+      [int selectedProductIndex]) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    final product = Product(
-        title: _formData['title'],
-        description: _formData['description'],
-        price: _formData['price'],
-        imageUrl: _formData['imageUrl']);
 
     if (selectedProductIndex == null) {
-      addProduct(product);
+      addProduct(
+        _formData['title'],
+        _formData['description'],
+        _formData['imageUrl'],
+        _formData['price'],
+      );
     } else {
-      updateProduct(product);
+      updateProduct(
+        _formData['title'],
+        _formData['description'],
+        _formData['imageUrl'],
+        _formData['price'],
+      );
     }
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator.pushReplacementNamed(context, '/products')
+        .then((_) => setSelectedProduct(null));
   }
 
   Widget _buildSubmitButton() {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
           child: Text('SAVE'),
           textColor: Colors.white,
-          onPressed: () => _submitForm(model.addProduct, model.updateProduct, model.selectedProductIndex)
+          onPressed: () => _submitForm(model.addProduct, model.updateProduct,
+              model.selectProduct, model.selectedProductIndex),
         );
       },
     );
@@ -138,8 +147,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         final Widget pageContent =
             _buildPageContent(context, model.selectedProduct);
 

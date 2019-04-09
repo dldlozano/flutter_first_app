@@ -4,7 +4,7 @@ import 'dart:async';
 import '../widgets/ui_elements/title_default.dart';
 
 import 'package:scoped_model/scoped_model.dart';
-import '../scoped-models/products.dart';
+import '../scoped-models/main.dart';
 
 import '../models/product.dart';
 
@@ -39,9 +39,9 @@ class ProductPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      child: ScopedModelDescendant<ProductsModel>(
-        builder: (BuildContext context, Widget child, ProductsModel model) {
-          final Product product = model.products[productIndex];
+      child: ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+          final Product product = model.allProducts[productIndex];
           return Scaffold(
             appBar: AppBar(
               title: Text('Product Detail'),
