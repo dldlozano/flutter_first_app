@@ -90,9 +90,26 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['description'],
         _formData['imageUrl'],
         _formData['price'],
-      ).then((_) {
-        Navigator.pushReplacementNamed(context, '/products')
-        .then((_) => setSelectedProduct(null));
+      ).then((bool isSucess) {
+        if (isSucess) {
+          Navigator.pushReplacementNamed(context, '/products')
+              .then((_) => setSelectedProduct(null));
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Something went wrong'),
+                  content: Text('Please try again'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('OK'),
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ],
+                );
+              });
+        }
       });
     } else {
       updateProduct(
@@ -102,7 +119,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['price'],
       ).then((_) {
         Navigator.pushReplacementNamed(context, '/products')
-        .then((_) => setSelectedProduct(null));
+            .then((_) => setSelectedProduct(null));
       });
     }
   }
@@ -111,7 +128,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.isLoading
-            ? Center(child:CircularProgressIndicator())
+            ? Center(child: CircularProgressIndicator())
             : RaisedButton(
                 child: Text('SAVE'),
                 textColor: Colors.white,
